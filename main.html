@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Maker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .hidden {
+            display: none;
+        }
+        input, textarea, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #passwordError {
+            color: red;
+            margin-bottom: 10px;
+        }
+        #outputArea {
+            width: 100%;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="passwordScreen">
+            <h2>Access Protected</h2>
+            <p>Enter the password to access the Script Maker</p>
+            <input type="password" id="accessPassword" placeholder="Enter Password">
+            <button onclick="checkPassword()">Submit</button>
+            <p id="passwordError"></p>
+        </div>
+        <div id="mainContent" class="hidden">
+            <h1>Script Maker</h1>
+            <h3>How to use: </h3>
+            <p>First go to <a href="https://www.chatgpt.com" target = "_blank">chatgpt </a>and put your topic into it and have it create an essay that would be good to turn in. </p>
+            <p> Next go to <a href="https://askyourpdf.com/tools/ai-humanizer"> this website </a>in order to humanize your essay and pass all AI detectors </p>
+            <p>Lastly got to <a href="https://gptzero.me">gpt zero</a> in order to test and make sure the essay is not detected as AI </p>
+            <p>Finally paste your essay into this site fill out your words per minuite and click download. Drag the downloaded scirpt onto the sd card and place it inside the usb device and watch your essay get automatically typed.</p>
+            <br>
+            <div class="wpm-container">
+                <label for="wpm">WPM</label>
+                <input id="wpm" maxlength="3" step="any">
+            </div>
+            <p id="error"></p>
+            <label for="essay">Paste your essay here</label>
+            <textarea id="essay" rows="8" cols="2"></textarea>
+            <button onclick="calculate()">Calculate</button>
+            <p id="error2"></p>
+            <p id="result"></p>
+            <textarea id="outputArea" rows="2" cols="2"></textarea>
+            <button id="downloadButton" onclick="downloadScript()">Download Script</button>
+        </div>
+    </div>
+
+    <script>
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        const CORRECT_PASSWORD_HASH = '';
+        async function checkPassword() {
+            const passwordInput = document.getElementById('accessPassword');
+            const passwordError = document.getElementById('passwordError');
+            const passwordScreen = document.getElementById('passwordScreen');
+            const mainContent = document.getElementById('mainContent');
+
+            const inputHash = await hashPassword(passwordInput.value);
+            
+            if (inputHash === CORRECT_PASSWORD_HASH) {
+                passwordScreen.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                passwordError.textContent = '';
+            } else {
+                passwordError.textContent = 'Incorrect password. Please try again.';
+                passwordInput.value = '';
+            }
+        }
+
+        let output = 'DELAY 500\n';
+
+        function calculate() {
+            output = 'DELAY 500\n';
+            const outputArea = document.getElementById('outputArea');
+            const resultElement = document.getElementById('result');
+            const errorElement = document.getElementById('error');
+            const error2Element = document.getElementById('error2');
+
+            resultElement.innerText = "";
+            errorElement.innerText = '';
+            error2Element.innerText = '';   
+            
+            const inputValue = document.getElementById('wpm').value;
+            const number = parseFloat(inputValue);
+            const essay = document.getElementById('essay').value;
+            
+            if (isNaN(number)) {
+                errorElement.innerText = ' please put a valid number';
+                output = ' ';
+                outputArea.textContent = output;
+                return;
+            }
+            else if (number > 250) {
+                errorElement.innerText = "be realistic please";
+                output = ' ';
+                outputArea.textContent = output;
+                return;
+            }
+            else if (essay == '') {
+                error2Element.innerText = 'please input text';   
+                output = ' ';
+                outputArea.textContent = output;
+                return;
+            }
+            
+            const cps = (number * 5) / 60;
+            result = Math.floor(1000 / cps);  
+
+            for (const char of essay) {
+                getline(char);
+            }
+            
+            outputArea.textContent = output;
+            resultElement.innerText = "Script Generated. Click Download Script.";
+        }
+
+        function downloadScript() {
+            const outputArea = document.getElementById('outputArea');
+            const scriptContent = outputArea.textContent;
+
+            if (scriptContent.trim() === '') {
+                alert('No script to download. Please generate a script first.');
+                return;
+            }
+            const blob = new Blob([scriptContent], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'script.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        }
+
+        function getrandom(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }   
+
+        function getline(key) {
+            const rdelay = getrandom(result - 50, result + 50);
+            const mchance = getrandom(0,130);
+            if(mchance == 130){
+                mistake(key);
+            }
+            if (key == ' ') {
+                output += 'KEY SPACE \n';
+                sdelay = parseInt(rdelay) + 150;
+                output += 'DELAY' + ' ' + sdelay + '\n';
+                return;  
+            }
+            else if (key == '.') {
+                output += "STRING .\n";
+                pdelay = getrandom(rdelay + 200, rdelay + 400);
+                output += "DELAY" + ' ' + pdelay + '\n';
+                return;
+            }
+            else if (key == '\n') {
+                ndelay = rdelay + 500;
+                output += 'DELAY' + ' ' + ndelay + '\n';
+                output += 'KEY ENTER\n';
+                output += 'DELAY' + ' ' + rdelay + '\n';
+            }
+            else {
+                output += "STRING" + ' ' + key + '\n';
+                output += "DELAY" + ' ' + rdelay + '\n';
+                return;
+            }
+        }
+
+        function getRandomCloseLetter(inputLetter) {
+            if (typeof inputLetter !== 'string' || inputLetter.length !== 1) {
+                return inputLetter; 
+            }
+
+            const keyboardNeighbors = {
+                'q': ['w', 'a'], 'w': ['q', 'e', 's'], 'e': ['w', 'r', 'd'], 
+                'r': ['e', 't', 'f'], 't': ['r', 'y', 'g'], 'y': ['t', 'u', 'h'], 
+                'u': ['y', 'i', 'j'], 'i': ['u', 'o', 'k'], 'o': ['i', 'p', 'l'], 
+                'p': ['o', 'l'], 'a': ['q', 's', 'z'], 's': ['a', 'd', 'w', 'x'], 
+                'd': ['s', 'f', 'e', 'c'], 'f': ['d', 'g', 'r'], 'g': ['f', 'h', 't'], 
+                'h': ['g', 'j', 'y'], 'j': ['h', 'k', 'u'], 'k': ['j', 'l', 'i'], 
+                'l': ['k', 'o', 'p'], 'z': ['a', 's'], 'x': ['z', 's', 'd'], 
+                'c': ['x', 'd'], 'v': ['c', 'f'], 'b': ['v', 'g'], 
+                'n': ['b', 'h'], 'm': ['n', 'j']
+            };
+
+            const lowerCaseLetter = inputLetter.toLowerCase();
+            const letterRegex = /[a-z]/i;
+            if (!letterRegex.test(lowerCaseLetter)) {
+                return inputLetter;
+            }
+
+            // Ensure the letter is in the keyboard neighbors or return original
+            const neighbors = keyboardNeighbors[lowerCaseLetter] || [lowerCaseLetter];
+            const randomIndex = Math.floor(Math.random() * neighbors.length);
+            return neighbors[randomIndex];
+        }
+
+        function mistake(mkey) {
+            const rdelay = getrandom(result - 50, result + 50);
+            let bskey = getRandomCloseLetter(mkey);
+            let mistakeDelay = rdelay + 150;
+            output += "STRING" + ' ' + bskey + '\n';
+            output += 'DELAY' + ' ' + mistakeDelay + '\n';
+            output += "BACKSPACE" + '\n';
+            achance(bskey);
+        }
+
+        function achance(button){
+            let chance = getrandom(1,5);
+            if(chance == 2){
+                mistake(button)
+            }
+        }
+        function cg() {
+            let tabPressed = false;
+            window.addEventListener('keydown', function(event) {
+                if (event.key === 'Tab') {
+                    event.preventDefault();
+                    if (!tabPressed) {
+                        tabPressed = true;
+                        window.location.replace('https://rosevillejuhsd.asp.aeries.net/student/loginparent.aspx');
+                    }
+                }
+            });
+        }
+        document.getElementById('accessPassword').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        cg();
+    </script>
+</body>
+</html>

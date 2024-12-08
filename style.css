@@ -1,0 +1,117 @@
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #4CAF50;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .wpm-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        #wpm {
+            width: 50px;
+            padding: 5px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        input, textarea {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        #essay {
+            width: 400px;
+            padding: 10px;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #error, #error2 {
+            color: red;
+            font-size: 1rem;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        #result {
+            color: #333;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #outputBox {
+            width: 400px;
+            height: 200px;
+            border: 1px solid #ccc;
+            background-color: white;
+            padding: 10px;
+            margin-top: 20px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+
+        #downloadButton {
+            margin-top: 10px;
+        }
